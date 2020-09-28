@@ -1,0 +1,22 @@
+{
+   "colas": [
+      {
+         "nombre": "Carniceria",
+         "color": "#e00000"
+      },
+      {
+         "nombre": "Charcuteria",
+         "color": "#b35600"
+      },
+      {
+         "nombre": "Pescaderia",
+         "color": "#03017e"
+      },
+      {
+         "nombre": "Frutas",
+         "color": "#15b300"
+      }
+   ],
+   "port": 3000,
+   "pan": true
+}

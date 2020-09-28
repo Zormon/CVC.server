@@ -1,0 +1,26 @@
+/*
+    ICONOS SPAR - TIPOGRAFIA CUSTOM
+*/
+@font-face {
+	font-family: 'SparIcons';
+	src: url('SparIcons.woff2');
+	font-weight: 300;
+}
+
+i.icon::before {
+    font-family: SparIcons !important;
+    font-style: normal;
+    margin: 0 0.2em;
+}
+
+/* Icons */
+.mas::before { content: '\2B'; }
+.menos::before { content: '\2D'; }
+.reset::before { content: '\30'; }
+.pan::before { content: '\70'; }
+.carniceria::before { content: '\61'; }
+.charcuteria::before { content: '\62'; }
+.comidas::before { content: '\63'; }
+.ensaladas::before { content: '\64'; }
+.config::before { content: '\7A'; }
+/* /- Icons */

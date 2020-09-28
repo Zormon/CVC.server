@@ -1,0 +1,9 @@
+{
+    "colas": [
+        {"nombre": "Charcuteria", "color": "#ff0000"},
+        {"nombre": "Carniceria", "color": "#00ff00"},
+        {"nombre": "Comidas", "color": "#0000ff"}
+    ],
+    "port": 3000,
+    "pan": true
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SPAR Gestión Turnos</title>
+    <link rel="icon" href="/pages/sparTablet/res/favicon.png" sizes="32x32" type="image/png">
+    <link rel="stylesheet" href="/pages/sparTablet/res/icons.css">
+    <link rel="manifest" href="/pages/sparTablet/res/manifest.json" />
+    <script src="/pages/sparTablet/res/wSocket.class.js?5" defer></script>
+    <script src="/pages/sparTablet/res/control.js?5" defer></script>
+    <link rel="stylesheet" href="/pages/sparTablet/res/control.css?5">
+</head>
+<body>
+    <div id="mainFlex">
+        <section id="controles"></section>
+    </div>
+    <footer><span>Comunicacion Visual Canarias</span><button id="configBtn"><i class="icon config"></i></button></footer>
+
+
+    <template id="configDialog">
+        <form>
+            <fieldset id="exColas">
+                <legend>Excluir colas</legend>
+                <div>
+                    <div>
+                        <input type="checkbox" id="ex1">
+                        <label for="ex1">1</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ex2">
+                        <label for="ex2">2</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ex3">
+                        <label for="ex3">3</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ex4">
+                        <label for="ex4">4</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ex5">
+                        <label for="ex5">5</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ex6">
+                        <label for="ex6">6</label>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </template>
+</body>
+</html>

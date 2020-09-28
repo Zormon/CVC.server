@@ -1,0 +1,14 @@
+{
+  "name": "turnomaticserver",
+  "productName": "turnomaticserver",
+  "version": "1.1.0",
+  "description": "Microservidor para turnomatics",
+  "scripts": {
+    "start": "node _server.js"
+  },
+  "author": "Comunicacion Visual Canarias",
+  "license": "MIT",
+  "dependencies": {
+    "websocket": "^1.0.29"
+  }
+}
