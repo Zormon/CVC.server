@@ -37,6 +37,8 @@ button:active {
     padding: 0;
 }
 
+.hidden { display: none !important; }
+
 /*=====  End of Generales  ======*/
 
 
@@ -52,6 +54,7 @@ button:active {
 }
 
 #controles div {
+    position: relative;
     flex-basis: 100%;
     text-align: center;
     display: grid;
@@ -149,6 +152,7 @@ footer #configBtn {
 
 /*=====  End of Footer  ======*/
 
+
 /*=============================================
 =            Modal            =
 =============================================*/
@@ -158,7 +162,7 @@ footer #configBtn {
     to      { transform: scale(1); opacity: 1}
 }
 
-div#modal {
+div.modalBox {
     background-color: rgba(0,0,0,0.6);
     position: fixed;
     width: 100vw; height: 100vh;
@@ -168,40 +172,44 @@ div#modal {
     text-align: center;
 }
 
-div#modal > div {
+div.modalBox > div {
     background-color: white;
     width: 70vw; height: 80vh;
     position: absolute;
     display: block;
     left: 15vw; top: 15vh;
-    border-radius: 1.4rem;
+    border-radius: 3vh;
     padding: .5em;
-    font-size: 3em;
+    font-size: 6vh;
     overflow: hidden;
     animation: zoom-in .2s ease;
 }
 
-div#modal > div h1 {
-    font-size: 1em;
+div.modalBox > div h1 {
+    font-size: 6vh;
     margin: 0 0 .5em;
 }
 
-div#modal > div > div {
+div.modalBox > div > div {
     font-size: .4em;
 }
 
-div#modal > div button {
+div.modalBox > div button {
     position: absolute;
     bottom: 0;
     width: 50%;
     border: none;
-    font-size: 1.6rem;
+    font-size: 5vh;
     text-transform: uppercase;
-    padding: 2rem 1rem;
+    padding: 4vh;
 }
 
-div#modal > div button#ok { right: 0; background-color: rgb(197, 255, 197); }
-div#modal button#cancel { left: 0; background-color: rgb(255, 197, 197); }
+div.modalBox > div button#ok { right: 0; background-color: rgb(197, 255, 197); }
+div.modalBox button#cancel { left: 0; background-color: rgb(255, 197, 197); }
+
+
+/* Types */
+div.modalBox.error > div { border: 1vh solid #dd0000; }
 
 
 /*=====  End of Modal  ======*/
@@ -211,45 +219,42 @@ div#modal button#cancel { left: 0; background-color: rgb(255, 197, 197); }
 =            Config            =
 =============================================*/
 
-fieldset#exColas input[type="checkbox"] {
+.toggles.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5vh;
+    font-size: 7vh;
+}
+
+.toggles input[type="checkbox"] {
     display: none;
 }
 
-fieldset#exColas > div {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 1em;
-    font-size: 1.2em;
-}
-
-fieldset#exColas input[type="checkbox"] + label {
-    width: 1em;
+.toggles input[type="checkbox"] + label {
     height: 1em;
     display: inline-block;
     background-color: #ddd;
-    padding: 1em;
+    padding: 6vh 5vh;
     text-align: center;
     line-height: 0;
-    border-radius: .5em;
-    font-size: 2em;
-    text-indent: -0.3em;
+    border-radius: 2vh;
     font-weight: bold;
     color: #555;
-    border: 3px solid #555;
+    border: .6vh solid #555;
 }
 
-fieldset#exColas input[type="checkbox"] + label:active {
+.toggles input[type="checkbox"] + label:active {
     background-color: #555;
     color: white;
 }
 
-fieldset#exColas input[type="checkbox"]:checked + label {
+.toggles input[type="checkbox"]:checked + label {
     background-color: rgb(221, 127, 127);
     border-color: rgb(102, 3, 3);
     color: rgb(102, 3, 3);
 }
 
-fieldset#exColas input[type="checkbox"]:checked + label:active {
+.toggles input[type="checkbox"]:checked + label:active {
     background-color: rgb(102, 3, 3);
     color: white;
 }

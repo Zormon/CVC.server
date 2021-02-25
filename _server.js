@@ -117,7 +117,7 @@ const server = http.createServer((req, res) => {
             broadcast( ret )
         break
         case 'control':
-            fs.readFile(`${__dirname}/pages/sparTablet/panel.html`, 'binary', (err, file)=> {
+            fs.readFile(`${__dirname}/pages/tablet/panel.html`, 'binary', (err, file)=> {
                 res.writeHead(200, {'Content-Type': 'text/html'})
                 res.write( file, 'binary' )
                 res.end()
@@ -141,20 +141,22 @@ const server = http.createServer((req, res) => {
             if (config.pan) { broadcast( {accion: 'pan'} ) }
             res.end()
         break
-        case 'getColas':
+        case 'getConfig':
                 loadConfig()
                 res.writeHead(200, {'Content-Type': 'text/html'})
-                res.write( JSON.stringify({colas: config.colas}) )
+                res.write( JSON.stringify(config) )
                 res.end()
         break;
-        case 'setColas':
+        case 'setConfig':
                 req.on('data', (data)=> {
-                    config.colas = JSON.parse( data.toString() )
+                    data = JSON.parse(data)
+                    config.pan = data.pan
+                    config.colas = data.colas
                     updateConfigFile()
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.write( JSON.stringify( { status:'ok', error:'' } ) )
                     res.end()
-                    broadcast( {accion:'spread', colas: config.colas, turnos: turnos, tickets: tickets} )
+                    broadcast( {accion:'spread', colas: config.colas, pan: config.pan, turnos: turnos, tickets: tickets} )
                 })
         break
         /* MICRO-SERVIDOR DE ARCHIVOS ESTATICOS */

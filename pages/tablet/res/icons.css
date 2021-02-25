@@ -1,0 +1,97 @@
+/*
+    ICONOS SPAR - TIPOGRAFIA CUSTOM
+*/
+@font-face {
+	font-family: 'SparIcons';
+	src: url('SparIcons.woff2');
+	font-weight: 300;
+}
+
+i.icon::before {
+    font-family: SparIcons !important;
+    font-style: normal;
+    margin: 0 0.2em;
+}
+
+/* Icons */
+.mas::before { content: '\2B'; }
+.menos::before { content: '\2D'; }
+.reset::before { content: '\30'; }
+.pan::before { content: '\70'; }
+.config::before { content: '\7A'; }
+/* /- Icons */
+
+
+
+
+
+
+@font-face {
+    font-family: 'CVC Icons';
+    src: url(CVCicons.woff2) format('woff2');
+  }
+
+i[class^="icon-"]:before, .icon-prefix:before {
+    font-family: 'CVC Icons';
+    font-size: 18vw;
+    font-style: normal;
+    position: absolute;
+    left: 20vw;
+    top: -4vw;
+    z-index: 0;
+    opacity: .3;
+}
+
+.icon-prefix:before {
+    position: absolute;
+    left: -3rem;
+}
+
+/* Icon list */
+.icon-equipo:before         { content: '\E000'; }
+.icon-tienda:before         { content: '\E001'; }
+.icon-nota:before           { content: '\E002'; }
+.icon-on:before             { content: '\E003'; }
+.icon-off:before            { content: '\E004'; }
+.icon-router:before         { content: '\E005'; }
+.icon-ip:before             { content: '\E006'; }
+.icon-masVert:before        { content: '\E007'; }
+.icon-add:before            { content: '\E008'; }
+.icon-recargar:before       { content: '\E009'; }
+.icon-usuarios:before       { content: '\E00A'; }
+.icon-usuario:before        { content: '\E00B'; }
+.icon-grupos:before         { content: '\E00C'; }
+.icon-parrilla:before       { content: '\E00D'; }
+.icon-listas:before         { content: '\E00E'; }
+.icon-eventos:before        { content: '\E00F'; }
+.icon-pendientes:before     { content: '\E010'; }
+.icon-actuales:before       { content: '\E011'; }
+.icon-futuros:before        { content: '\E012'; }
+.icon-caducados:before      { content: '\E013'; }
+.icon-encargos:before       { content: '\E014'; }
+.icon-incidencias:before    { content: '\E015'; }
+.icon-notif:before          { content: '\E016'; }
+.icon-canales:before        { content: '\E017'; }
+.icon-canciones:before      { content: '\E018'; }
+.icon-ayuda:before          { content: '\E019'; }
+.icon-perfil:before         { content: '\E01A'; }
+.icon-config:before         { content: '\E01B'; }
+.icon-salir:before          { content: '\E01C'; }
+.icon-left:before           { content: '\E01D'; }
+.icon-right:before          { content: '\E01E'; }
+.icon-up:before             { content: '\E01F'; }
+.icon-down:before           { content: '\E020'; }
+.icon-general:before        { content: '\E021'; }
+.icon-edit:before           { content: '\E022'; }
+.icon-delete:before         { content: '\E023'; }
+.icon-details:before        { content: '\E024'; }
+.icon-logs:before           { content: '\E025'; }
+.icon-xml:before            { content: '\E026'; }
+
+.icon-carne:before          { content: '\E200'; }
+.icon-pescado:before        { content: '\E201'; }
+.icon-embutido:before       { content: '\E202'; }
+.icon-fruta:before          { content: '\E203'; }
+.icon-verdura:before        { content: '\E204'; }
+.icon-pan:before            { content: '\E205'; }
+.icon-comidas:before        { content: '\E206'; }
