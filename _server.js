@@ -1,60 +1,104 @@
+function clone(a) { return JSON.parse(JSON.stringify(a))}
 const WebSocketServer = require('websocket').server
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const url = require('url')
-var config = null
 
 function loadConfig() {
+    let data
     try {
-        config = JSON.parse( fs.readFileSync(`${__dirname}/config.json`) )
+        data = JSON.parse( fs.readFileSync(`${__dirname}/config.json`) )
     } catch (error) {
         let configBackup = fs.readFileSync(`${__dirname}/.defaults/config.json.default`)
         fs.writeFileSync(`${__dirname}/config.json`, configBackup)
-        config = JSON.parse( configBackup )
+        data = JSON.parse( configBackup )
     }
+    return data
 }
 
-// Cargar Turnos
-try {
-    var turnos = JSON.parse( fs.readFileSync(`${__dirname}/turnos.json`) )
-    var origTurnos = JSON.parse(JSON.stringify(turnos)) // Copia el objeto
-} catch (error) {
-    let turnosBackup = fs.readFileSync(`${__dirname}/.defaults/turnos.json.default`)
-    fs.writeFileSync(`${__dirname}/turnos.json`, turnosBackup)
-    var turnos = JSON.parse( turnosBackup )
+function loadTurnos(dir) {
+    let data
+    try {
+        data = JSON.parse( fs.readFileSync(`${dir}/turnos.json`) )
+    } catch (error) {
+        let turnosBackup = fs.readFileSync(`${dir}/.defaults/turnos.json.default`)
+        fs.writeFileSync(`${dir}/turnos.json`, turnosBackup)
+        data = JSON.parse( turnosBackup )
+    }
+    return data
 }
 
-// Cargar Tickets
-try {
-    var tickets = JSON.parse( fs.readFileSync(`${__dirname}/tickets.json`) )
-    var origTickets = JSON.parse(JSON.stringify(tickets)) // Copia el objeto
-} catch (error) {
-    let ticketsBackup = fs.readFileSync(`${__dirname}/.defaults/tickets.json.default`)
-    fs.writeFileSync(`${__dirname}/tickets.json`, ticketsBackup)
-    var tickets = JSON.parse( ticketsBackup )
+function loadTickets(dir) {
+    let data
+    try {
+        data = JSON.parse( fs.readFileSync(`${dir}/tickets.json`) )
+    } catch (error) {
+        let ticketsBackup = fs.readFileSync(`${dir}/.defaults/tickets.json.default`)
+        fs.writeFileSync(`${dir}/tickets.json`, ticketsBackup)
+        data = JSON.parse( ticketsBackup )
+    }
+    return data
 }
+
+function loadEvents(file) {
+    let data = []
+    try { data = JSON.parse( fs.readFileSync(file) ) } catch (e) { data = [] }
+    return data
+}
+
+function runEvents(evs) {
+    let now = new Date(); 
+    let nowTime = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0')
+    let nowWeekDay = now.getDay(); if (nowWeekDay==0) { nowWeekDay = 7 }
+    now.setHours(0,0,0,0)
+    let hasta, desde
+    
+    /* Busca un evento que se tenga que emitir ahora
+    Condiciones: 
+        La hora es la actual
+        Las fechas estan dentro o no están especificadas
+        Los días de la semana no están especificados o incluye hoy
+    */
+    let event = evs.find( (e) => {
+        if (e.datetime.from) { desde = Date.parse( e.datetime.from ) }
+        if (e.datetime.to) { hasta = Date.parse( e.datetime.to ) }
+        if (
+            e.datetime.time == nowTime && 
+            ( !desde || now >= desde) && ( !hasta || now <= hasta) &&
+            ( !e.datetime.weekdays || e.datetime.weekdays.indexOf(nowWeekDay) != -1)
+        ) {
+            return true
+        }
+    })
+
+    if (typeof event !== 'undefined') { // Hay evento a esta hora
+        broadcast( {accion:'event', event: event} )
+    }
+    
+}
+
 
 /*----------  Actualiza los archivos JSON de turnos y tickets si han cambiado  ----------*/
-function updateJsonFiles() {
-    let curr = JSON.stringify(turnos, null, 3)
-    let orig = JSON.stringify(origTurnos, null, 3)
+function updateJsonFiles(turn, origTurn, tic, origTic) {
+    let curr = JSON.stringify(turn, null, 3)
+    let orig = JSON.stringify(origTurn, null, 3)
     if (curr != orig) {
         fs.writeFileSync(`${__dirname}/turnos.json`, curr)
-        origTurnos = JSON.parse(JSON.stringify(turnos))
+        origTurn = JSON.parse(JSON.stringify(turn))
     }
 
-    curr = JSON.stringify(tickets, null, 3)
-    orig = JSON.stringify(origTickets, null, 3)
+    curr = JSON.stringify(tic, null, 3)
+    orig = JSON.stringify(origTic, null, 3)
     if (curr != orig) {
         fs.writeFileSync(`${__dirname}/tickets.json`, curr)
-        origTickets = JSON.parse(JSON.stringify(tickets))
+        origTic = JSON.parse(JSON.stringify(tic))
     }
 }
 
 /*----------  Actualiza el archivo JSON en disco con la configuracion del servidor  ----------*/
-function updateConfigFile() {
-    fs.writeFileSync(`${__dirname}/config.json`, JSON.stringify(config, null, 3) )
+function updateConfigFile(conf) {
+    fs.writeFileSync(`${__dirname}/config.json`, JSON.stringify(conf, null, 3) )
 }
 
 /*----------  Envia un mensaje a todos los clientes conectados por websocket  ----------*/
@@ -97,7 +141,7 @@ function ticket(cola) {
     return { accion: 'updateTicket', cola: cola, numero: tickets[cola].num }
 }
 
-loadConfig()
+
 
 /*=============================================
 =            SERVIDOR HTTP            =
@@ -138,7 +182,7 @@ const server = http.createServer((req, res) => {
             })
         break
         case 'pan':
-            if (config.pan) { broadcast( {accion: 'pan'} ) }
+            if (config.pan) { broadcast( {accion:'event', event: {type:'pan'}} ) }
             res.end()
         break
         case 'getConfig':
@@ -152,7 +196,7 @@ const server = http.createServer((req, res) => {
                     data = JSON.parse(data)
                     config.pan = data.pan
                     config.colas = data.colas
-                    updateConfigFile()
+                    updateConfigFile(config)
                     res.writeHead(200, {'Content-Type': 'application/json'})
                     res.write( JSON.stringify( { status:'ok', error:'' } ) )
                     res.end()
@@ -212,8 +256,14 @@ wsServer.on('request', (request) => {
   
 
 /*----------  HILO PRINCIPAL  ----------*/
-server.listen(config.port)           
-setInterval(updateJsonFiles, 5000)
+var config = loadConfig()
+var turnos = loadTurnos(__dirname); var origTurnos = clone(turnos)
+var tickets = loadTickets(__dirname); var origTickets = clone(tickets)
 
-setInterval(broadcast, 4000, {accion:'ping'}) // Envio de turnos a clientes para mantener conexiones abiertas
-
+server.listen(config.port)
+setInterval(()=>{ updateJsonFiles(turnos, origTurnos, tickets, origTickets) }, 5000)
+setInterval(()=>{ broadcast({accion:'ping'}) }, 4000) // Envio de turnos a clientes para mantener conexiones abiertas
+setInterval(()=>{ 
+    events = loadEvents(config.eventsFile)
+    runEvents(events.events) 
+}, 60000)

@@ -42,7 +42,7 @@ function modalBox(id, template, tplvars=[], type='', accion=false, buttons=['Can
   
         // Template vars
         tplvars.forEach(item => {
-          try { content.querySelector(`[data-tpl="${item[0]}"]`).textContent = item[1] } catch(e){}
+          try { content.querySelector(`[data-tpl="${item[0]}"]`).innerHTML = item[1] } catch(e){}
         })
   
         modalBox.appendChild(content)
@@ -75,12 +75,19 @@ function modalBox(id, template, tplvars=[], type='', accion=false, buttons=['Can
     }
   }
 
+// Para detectar si la pantalla es táctil. No es 100% fiable pero sirve para la mayoría de los casos
+var isTouchCapable = 'ontouchstart' in window ||
+ window.DocumentTouch && document instanceof window.DocumentTouch ||
+ navigator.maxTouchPoints > 0 ||
+ window.navigator.msMaxTouchPoints > 0;
+
 
 export { 
     iconNames,
     sleep,
     modalBox,
     isFunction,
+    isTouchCapable,
     getById as $,
     querySel as $$,
     querySelAll as $$$

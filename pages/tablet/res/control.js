@@ -1,7 +1,7 @@
-import {$, $$$, modalBox} from './exports.js'
+import {$, $$$, modalBox, isTouchCapable} from './exports.js'
 import wSocket from './wSocket.class.js'
 
-var ws = new wSocket(window.location.hostname, window.location.port)
+var ws = new wSocket(window.location.hostname, window.location.port, isTouchCapable)
 ws.init()
 
 $('configBtn').onclick = () => {

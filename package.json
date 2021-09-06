@@ -1,14 +1,14 @@
 {
-  "name": "turnomaticserver",
-  "productName": "turnomaticserver",
-  "version": "1.2.0",
-  "description": "Microservidor para turnomatics",
+  "name": "cserver",
+  "productName": "cserver",
+  "version": "2.0.1",
+  "description": "Microservidor para canal corporativo y turnomatic",
   "scripts": {
     "start": "node _server.js"
   },
   "author": "Comunicacion Visual Canarias",
   "license": "MIT",
   "dependencies": {
-    "websocket": "^1.0.29"
+    "websocket": "^1.0.34"
   }
 }

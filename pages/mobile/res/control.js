@@ -35,7 +35,6 @@ function confirm(msg, accion) {
 
 var ws = new wSocket(window.location.hostname, window.location.port)
 ws.onticket = (e) => {
-    console.log('ticket')
     navigator.sendBeacon('/ticket/' + e.target.parentElement.dataset.cola)
 }
 ws.init()

@@ -1,10 +1,13 @@
 import { iconNames, $, modalBox } from './exports.js'
 
 class wSocket {
-    constructor(ip, port) {
+    constructor(ip, port, touch=false) {
         this.ip = ip
         this.port = port
         this.pan = null
+        this.touchEvent = touch? 'ontouchstart' : 'onmousedown'
+
+        if ( localStorage.getItem('sinPan') == null ) { localStorage.setItem('sinPan', false) }
     }
 
     init() {
@@ -23,8 +26,8 @@ class wSocket {
                 case 'update':
                     this.update(msg.cola, msg.numero)
                 break
-                case 'pan':
-                    if (this.pan) { 
+                case 'event':
+                    if (msg.event.type == 'pan' && this.pan) { 
                         $('pan').classList.add('disabled')
                         setTimeout( ()=> { $('pan').classList.remove('disabled') }, 28000)
                     }
@@ -43,7 +46,7 @@ class wSocket {
         if (this.pan) {
             if (!document.body.contains($('pan'))) {
                 let sec = document.createElement('section'); sec.id = 'pan'
-                let but = document.createElement('button'); but.className = 'control pan'; but.onmousedown = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Dar aviso de pan?']], 'aviso', ()=>{navigator.sendBeacon('/pan/')} ) }
+                let but = document.createElement('button'); but.className = 'control pan'; but[this.touchEvent] = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Dar aviso de pan?']], 'aviso', ()=>{navigator.sendBeacon('/pan/')} ) }
                 sec.appendChild(but)
                 $('mainFlex').appendChild(sec)
             }
@@ -66,9 +69,9 @@ class wSocket {
                 nombre = document.createElement('h2'); nombre.textContent = colas[i].nombre
                 icon = document.createElement('i'); icon.className = `icon-${iconNames[colas[i].icon]}`
                 num = document.createElement('h1'); num.id = `cola${i}`; num.textContent = turnos[i].num
-                mas = document.createElement('button'); mas.className = 'control mas'; mas.onmousedown = (e)=>{ _this.send( {accion: 'sube', cola: e.target.parentElement.dataset.cola} ) }
-                menos = document.createElement('button'); menos.className = 'control menos'; menos.onmousedown = (e)=>{ _this.send( {accion: 'baja', cola: e.target.parentElement.dataset.cola}) }
-                reset = document.createElement('button'); reset.className = 'control reset'; reset.onmousedown = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Resetear el turno a cero?']], 'aviso', ()=> { _this.send( {accion: 'reset', cola: e.target.parentElement.dataset.cola}) } ) }
+                mas = document.createElement('button'); mas.className = 'control mas'; mas[this.touchEvent] = (e)=>{ _this.send( {accion: 'sube', cola: e.target.parentElement.dataset.cola} ) }
+                menos = document.createElement('button'); menos.className = 'control menos'; menos[this.touchEvent] = (e)=>{ _this.send( {accion: 'baja', cola: e.target.parentElement.dataset.cola}) }
+                reset = document.createElement('button'); reset.className = 'control reset'; reset[this.touchEvent] = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Resetear el turno a cero?']], 'aviso', ()=> { _this.send( {accion: 'reset', cola: e.target.parentElement.dataset.cola}) } ) }
                 mas.style = menos.style = reset.style = `color:${colas[i].color}`
                 cola.appendChild(num)
                 cola.appendChild(nombre)
