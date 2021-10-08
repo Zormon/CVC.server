@@ -53,7 +53,7 @@ button:active {
     flex: 7;
 }
 
-#controles div {
+#controles > div {
     position: relative;
     flex-basis: 100%;
     text-align: center;
@@ -79,6 +79,11 @@ button:active {
     display: inline;
     margin: 0;
     font-size: 2.5vw;
+}
+
+#controles h3 {
+    margin: 0;
+    font-size: 1.5vw;
 }
 
 #controles .icon {

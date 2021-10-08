@@ -11,11 +11,13 @@ $('configBtn').onclick = () => {
 
     localStorage.setItem('exColas', selEx)
     localStorage.setItem('sinPan', $('sinPan').checked)
+    localStorage.setItem('sinTickets', $('sinTickets').checked)
     location.reload()
     }, ['Cancelar', 'Guardar'] 
   )
 
   $('sinPan').checked = (localStorage.getItem('sinPan')=='true')
+  $('sinTickets').checked = (localStorage.getItem('sinTickets')=='true')
   var exColas = []
 
   let colasString = localStorage.getItem('exColas')

@@ -74,6 +74,7 @@ function runEvents(evs) {
 
     if (typeof event !== 'undefined') { // Hay evento a esta hora
         broadcast( {accion:'event', event: event} )
+        console.log(event)
     }
     
 }
@@ -182,7 +183,7 @@ const server = http.createServer((req, res) => {
             })
         break
         case 'pan':
-            if (config.pan) { broadcast( {accion:'event', event: {type:'pan'}} ) }
+            if (config.pan) { broadcast( {accion:'event', event: {type:'pan', devices:[]}} ) }
             res.end()
         break
         case 'getConfig':
