@@ -5,76 +5,53 @@ const fs = require('fs')
 const path = require('path')
 const url = require('url')
 
-function loadConfig() {
+var lastEvent = -1
+
+function loadJson(dir, file) {
     let data
     try {
-        data = JSON.parse( fs.readFileSync(`${__dirname}/config.json`) )
-    } catch (error) {
-        let configBackup = fs.readFileSync(`${__dirname}/.defaults/config.json.default`)
-        fs.writeFileSync(`${__dirname}/config.json`, configBackup)
-        data = JSON.parse( configBackup )
+        data = JSON.parse( fs.readFileSync(`${dir}/data/${file}.json`) )
+    } catch (e) {
+        let restore = fs.readFileSync(`${dir}/data/.defaults/${file}.json.default`)
+        fs.writeFileSync(`${dir}/data/${file}.json`, restore)
+        data = JSON.parse( restore )
     }
     return data
 }
 
-function loadTurnos(dir) {
-    let data
-    try {
-        data = JSON.parse( fs.readFileSync(`${dir}/turnos.json`) )
-    } catch (error) {
-        let turnosBackup = fs.readFileSync(`${dir}/.defaults/turnos.json.default`)
-        fs.writeFileSync(`${dir}/turnos.json`, turnosBackup)
-        data = JSON.parse( turnosBackup )
-    }
-    return data
-}
-
-function loadTickets(dir) {
-    let data
-    try {
-        data = JSON.parse( fs.readFileSync(`${dir}/tickets.json`) )
-    } catch (error) {
-        let ticketsBackup = fs.readFileSync(`${dir}/.defaults/tickets.json.default`)
-        fs.writeFileSync(`${dir}/tickets.json`, ticketsBackup)
-        data = JSON.parse( ticketsBackup )
-    }
-    return data
-}
 
 function loadEvents(file) {
     let data = []
-    try { data = JSON.parse( fs.readFileSync(file) ) } catch (e) { data = [] }
+    try { data = JSON.parse( fs.readFileSync(file) ) } catch (e) { data = {events:[]} }
     return data
 }
 
 function runEvents(evs) {
     let now = new Date(); 
     let nowTime = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0')
-    let nowWeekDay = now.getDay(); if (nowWeekDay==0) { nowWeekDay = 7 }
+    let nowWeekDay = now.getDay(); if (nowWeekDay==0) { nowWeekDay = 7 }; nowWeekDay--
     now.setHours(0,0,0,0)
     let hasta, desde
     
+
     /* Busca un evento que se tenga que emitir ahora
     Condiciones: 
+        No es el último evento emitido
         La hora es la actual
-        Las fechas estan dentro o no están especificadas
-        Los días de la semana no están especificados o incluye hoy
+        Las fechas estan dentro
+        Los días de la semana incluye hoy
     */
     let event = evs.find( (e) => {
-        if (e.datetime.from) { desde = Date.parse( e.datetime.from ) }
-        if (e.datetime.to) { hasta = Date.parse( e.datetime.to ) }
+        desde = Date.parse( e.dateFrom ); hasta = Date.parse( e.dateTo )
         if (
-            e.datetime.time == nowTime && 
-            ( !desde || now >= desde) && ( !hasta || now <= hasta) &&
-            ( !e.datetime.weekdays || e.datetime.weekdays.indexOf(nowWeekDay) != -1)
-        ) {
-            return true
-        }
+            e.id != lastEvent && e.time == nowTime &&
+            now >= desde && now <= hasta && !!( e.weekdays & 1<<nowWeekDay)
+        ) { return true }
     })
 
     if (typeof event !== 'undefined') { // Hay evento a esta hora
         broadcast( {accion:'event', event: event} )
-        console.log(event)
+        lastEvent = event.id
     }
     
 }
@@ -187,7 +164,7 @@ const server = http.createServer((req, res) => {
             res.end()
         break
         case 'getConfig':
-                loadConfig()
+                config = loadJson(__dirname, 'config')
                 res.writeHead(200, {'Content-Type': 'text/html'})
                 res.write( JSON.stringify(config) )
                 res.end()
@@ -241,7 +218,7 @@ const server = http.createServer((req, res) => {
 const wsServer = new WebSocketServer({httpServer: server})
 
 wsServer.on('request', (request) => {
-    loadConfig()
+    config = loadJson(__dirname, 'config')
     var connection = request.accept(null, request.origin)
     connection.sendUTF( JSON.stringify({accion:'spread', colas: config.colas, turnos: turnos, pan: config.pan, tickets: tickets}) )
 
@@ -257,9 +234,9 @@ wsServer.on('request', (request) => {
   
 
 /*----------  HILO PRINCIPAL  ----------*/
-var config = loadConfig()
-var turnos = loadTurnos(__dirname); var origTurnos = clone(turnos)
-var tickets = loadTickets(__dirname); var origTickets = clone(tickets)
+var config = loadJson(__dirname, 'config')
+var turnos = loadJson(__dirname, 'turnos'); var origTurnos = clone(turnos)
+var tickets = loadJson(__dirname, 'tickets'); var origTickets = clone(tickets)
 
 server.listen(config.port)
 setInterval(()=>{ updateJsonFiles(turnos, origTurnos, tickets, origTickets) }, 5000)
@@ -267,4 +244,4 @@ setInterval(()=>{ broadcast({accion:'ping'}) }, 4000) // Envio de turnos a clien
 setInterval(()=>{ 
     events = loadEvents(config.eventsFile)
     runEvents(events.events) 
-}, 60000)
+}, 1000)

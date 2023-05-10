@@ -1,0 +1,32 @@
+{
+    "status": "ok",
+    "info": {
+        "id": 1,
+        "device": {
+            "name": "Oficina",
+            "type": "Doble",
+            "shop": 1
+        },
+        "version": 1642512369
+    },
+    "events": [
+        {
+            "id": 9,
+            "name": "Largo",
+            "type": "media",
+            "dateFrom": "2022-01-17",
+            "dateTo": "2022-03-17",
+            "time": "14:27",
+            "weekdays": 2,
+            "devices": [
+                1
+            ],
+            "data": {
+                "file": "1642512099.mp4",
+                "duration": 14,
+                "volume": 1
+            },
+            "ndevices": 1
+        }
+    ]
+}

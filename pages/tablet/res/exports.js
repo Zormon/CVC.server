@@ -29,7 +29,7 @@ function isFunction(f) {return f && {}.toString.call(f)==='[object Function]'}
  * @param {Function} accion Accion a realizar al pulsar el boton de aceptaar
  * @param {Array} buttons Textos alternativos para botones del modal
  */
-function modalBox(id, template, tplvars=[], type='', accion=false, buttons=['Cancelar','Aceptar']) {
+function modalBox(id, template, tplvars=[], type='', accion=false, buttons=['Cancelar','Aceptar'], touchEvent='ontouchstart') {
     if ( template ) { // Añadir
       if (!document.contains( getById(id) )) {
         // Modal Fullscreen Wrapper
@@ -52,12 +52,12 @@ function modalBox(id, template, tplvars=[], type='', accion=false, buttons=['Can
           let btnCancel = document.createElement('button')
           btnCancel.appendChild( document.createTextNode(buttons[0]) )
           btnCancel.id = 'cancel'
-          btnCancel.onclick = ()=> { modal.remove() }
+          btnCancel[touchEvent] = ()=> { modal.remove() }
       
           let btnOk = document.createElement('button')
           btnOk.appendChild( document.createTextNode(buttons[1]) )
           btnOk.id = 'ok'
-          btnOk.onclick = ()=> { accion(); modal.remove() }
+          btnOk[touchEvent] = ()=> { accion(); modal.remove() }
   
           modalBox.appendChild(btnOk)
           modalBox.appendChild(btnCancel)

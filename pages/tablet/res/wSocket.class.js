@@ -50,7 +50,7 @@ class wSocket {
         if (this.pan) {
             if (!document.body.contains($('pan'))) {
                 let sec = document.createElement('section'); sec.id = 'pan'
-                let but = document.createElement('button'); but.className = 'control pan'; but[this.touchEvent] = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Dar aviso de pan?']], 'aviso', ()=>{navigator.sendBeacon('/pan/')} ) }
+                let but = document.createElement('button'); but.className = 'control pan'; but[this.touchEvent] = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Dar aviso de pan?']], 'aviso', ()=>{navigator.sendBeacon('/pan/')}, ['Cancelar','Aceptar' ], this.touchEvent ) }
                 sec.appendChild(but)
                 $('mainFlex').appendChild(sec)
             }
@@ -79,7 +79,7 @@ class wSocket {
 
                 mas = document.createElement('button'); mas.className = 'control mas'; mas[this.touchEvent] = (e)=>{ _this.send( {accion: 'sube', cola: e.target.parentElement.dataset.cola} ) }
                 menos = document.createElement('button'); menos.className = 'control menos'; menos[this.touchEvent] = (e)=>{ _this.send( {accion: 'baja', cola: e.target.parentElement.dataset.cola}) }
-                reset = document.createElement('button'); reset.className = 'control reset'; reset[this.touchEvent] = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Resetear el turno a cero?']], 'aviso', ()=> { _this.send( {accion: 'reset', cola: e.target.parentElement.dataset.cola}) } ) }
+                reset = document.createElement('button'); reset.className = 'control reset'; reset[this.touchEvent] = (e)=>{ modalBox('confirm', 'msgBox', [['header','¿Resetear el turno a cero?']], 'aviso', ()=> { _this.send( {accion: 'reset', cola: e.target.parentElement.dataset.cola}) }, ['Cancelar','Aceptar' ], this.touchEvent ) }
                 mas.style = menos.style = reset.style = `color:${colas[i].color}`
 
                 nombre.appendChild(icon)
