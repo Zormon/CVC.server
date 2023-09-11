@@ -28,30 +28,33 @@ function loadEvents(file) {
 
 function runEvents(evs) {
     let now = new Date(); 
+    let nowDay = now.getDate().toString().padStart(2,'0') + '/' + (now.getMonth()+1).toString().padStart(2,'0') + '/' + now.getFullYear()
     let nowTime = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0')
     let nowWeekDay = now.getDay(); if (nowWeekDay==0) { nowWeekDay = 7 }; nowWeekDay--
     now.setHours(0,0,0,0)
     let hasta, desde
     
-
     /* Busca un evento que se tenga que emitir ahora
     Condiciones: 
-        No es el último evento emitido
+        No se ha emitido un evento en el minuto actual el día de hoy
         La hora es la actual
         Las fechas estan dentro
         Los días de la semana incluye hoy
     */
     let event = evs.find( (e) => {
         desde = Date.parse( e.dateFrom ); hasta = Date.parse( e.dateTo )
+
         if (
-            e.id != lastEvent && e.time == nowTime &&
+            e.time == nowTime && lastEventTime != `${e.time}-${nowDay}` &&
             now >= desde && now <= hasta && !!( e.weekdays & 1<<nowWeekDay)
         ) { return true }
     })
 
     if (typeof event !== 'undefined') { // Hay evento a esta hora
+        event.type = 'media'
         broadcast( {accion:'event', event: event} )
-        lastEvent = event.id
+
+        lastEventTime = `${event.time}-${nowDay}`
     }
     
 }
@@ -243,5 +246,5 @@ setInterval(()=>{ updateJsonFiles(turnos, origTurnos, tickets, origTickets) }, 5
 setInterval(()=>{ broadcast({accion:'ping'}) }, 4000) // Envio de turnos a clientes para mantener conexiones abiertas
 setInterval(()=>{ 
     events = loadEvents(config.eventsFile)
-    runEvents(events.events) 
-}, 1000)
+    runEvents(events) 
+}, 2000)
