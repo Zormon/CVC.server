@@ -23,7 +23,7 @@ function loadJson(dir, file) {
 function loadEvents(file) {
     let data = []
     try { data = JSON.parse( fs.readFileSync(file) ) } catch (e) { data = {events:[]} }
-    return data
+    return data.events
 }
 
 function runEvents(evs) {
@@ -246,5 +246,5 @@ setInterval(()=>{ updateJsonFiles(turnos, origTurnos, tickets, origTickets) }, 5
 setInterval(()=>{ broadcast({accion:'ping'}) }, 4000) // Envio de turnos a clientes para mantener conexiones abiertas
 setInterval(()=>{ 
     events = loadEvents(config.eventsFile)
-    runEvents(events) 
+    runEvents(events)
 }, 2000)
