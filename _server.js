@@ -5,7 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const url = require('url')
 
-var lastEvent = -1
+var lastEventTime = false
 
 function loadJson(dir, file) {
     let data
