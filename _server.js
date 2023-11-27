@@ -154,20 +154,6 @@ const server = http.createServer((req, res) => {
                 res.end()
             })
         break
-        case 'qr':
-            fs.readFile(`${__dirname}/pages/qr/qr.html`, 'binary', (err, file)=> {
-                res.writeHead(200, {'Content-Type': 'text/html'})
-                res.write( file, 'binary' )
-                res.end()
-            })
-        break
-        case 'mobile':
-            fs.readFile(`${__dirname}/pages/mobile/mobile.html`, 'binary', (err, file)=> {
-                res.writeHead(200, {'Content-Type': 'text/html'})
-                res.write( file, 'binary' )
-                res.end()
-            })
-        break
         case 'pan':
             if (config.pan) { broadcast( {accion:'event', event: {type:'pan', devices:[]}} ) }
             res.end()
