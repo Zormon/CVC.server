@@ -21,8 +21,8 @@ function loadJson(dir, file) {
 
 
 function loadEvents(file) {
-    let data = []
-    try { data = JSON.parse( fs.readFileSync(file) ) } catch (e) { data = {events:[]} }
+    let data = {events:[]}
+    try { data = JSON.parse( fs.readFileSync(file) ) } catch (e){}
     return data.events
 }
 
@@ -38,21 +38,27 @@ function runEvents(evs) {
     Condiciones: 
         No se ha emitido un evento en el minuto actual el día de hoy
         La hora es la actual
-        Las fechas estan dentro
+        Las fechas son nulas o estan dentro del dia actual
         Los días de la semana incluye hoy
     */
     let event = evs.find( (e) => {
-        desde = Date.parse( e.dateFrom ); hasta = Date.parse( e.dateTo )
+        desde = Date.parse( e.dateFrom )
+        hasta = Date.parse( e.dateTo )
 
         if (
-            e.time == nowTime && lastEventTime != `${e.time}-${nowDay}` &&
-            now >= desde && now <= hasta && !!( e.weekdays & 1<<nowWeekDay)
+            lastEventTime != `${e.time}-${nowDay}`
+            && e.time == nowTime
+            && (!!!e.dateFrom || now >= desde)
+            && (!!!e.dateTo || now <= hasta)
+            && !!( e.weekdays & 1<<nowWeekDay)
         ) { return true }
     })
+
 
     if (typeof event !== 'undefined') { // Hay evento a esta hora
         event.type = 'media'
         broadcast( {accion:'event', event: event} )
+        console.log( {accion:'event', event: event} )
 
         lastEventTime = `${event.time}-${nowDay}`
     }
